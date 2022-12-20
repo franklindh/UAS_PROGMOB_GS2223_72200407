@@ -1,0 +1,58 @@
+@page "/comments"
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject NavigationManager UriHelper
+
+@if (cms == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>PID</th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Body</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in cms)
+            {
+                <tr>
+                    <td>@c.postId</td>
+                    <td>@c.id</td>
+                    <td>@c.name</td>
+                    <td>@c.email</td>
+                    <td>@c.body</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Comments[]? cms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cms = await Http.GetFromJsonAsync<Comments[]>("https://jsonplaceholder.typicode.com/comments");
+    }
+
+    public class Comments
+    {
+        public int postId { get; set; }
+
+        public int id { get; set; }
+
+        public string name { get; set; }
+
+        public string email { get; set; }
+
+        public string body { get; set; }
+    }
+}
